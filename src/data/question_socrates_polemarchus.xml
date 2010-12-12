@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<questions xmlns="http://openmentor.org.uk/opencomment.xsd">
+<!-- 
+Again, this is a different type of question. Here, we are encouraging
+precision and phrasing. Only if the key concept has been described, and
+using appropriate terms, do we accept. This means we use regular expression
+classifiers a lot compared to some other questions. We also need to use
+the attempt number; this depends on recent additions to the inteface to
+make this testable. 
+-->
+	<question id="default">
+		<text>
+In this passage, Socrates examines a claim that Polemarchus 
+makes about the just man.
+ 
+What is that claim?
+		</text>
+		<segment>
+			/(?:\.|\?)/
+		</segment>
+		
+		<concepts>
+			<concept name="nature" class="uk.org.opencomment.classifiers.RegexClassifier">
+				/nature/
+			</concept>
+			
+			<concept name="wicked" class="uk.org.opencomment.classifiers.RegexClassifier">
+				/(wicked|evil)/
+			</concept>
+			
+			<concept name="just_man" class="uk.org.opencomment.classifiers.RegexClassifier">
+				/(good|just)\s+man/
+			</concept>
+			
+			<concept name="enemies" class="uk.org.opencomment.classifiers.RegexClassifier">
+				/enem(y|ies)/
+			</concept>
+		</concepts>
+		
+		<rules lang="text/javascript">
+			var matched = 0;
+			
+			if (answer.findConcept("nature")) {
+				matched = matched + 1;
+			}
+			if (answer.findConcept("wicked")) {
+				matched = matched + 1;
+			}
+			if (answer.findConcept("just_man")) {
+				matched = matched + 1;
+			}
+			if (answer.findConcept("enemies")) {
+				matched = matched + 1;
+			}
+			
+			if (matched == 4) {
+				answer.response.addParagraph("Yes, that's right");
+			} else if (matched == 3) {
+				answer.response.addParagraph("Yes, that's right. Let’s put is like this: \"it is " +
+					"the nature of a just man to harm those who are wicked and are his enemies\"");
+			} else if (answer.attempt == 1) {
+				answer.response.addParagraph("That's not quite right. Have and careful look at " +
+					"paragraph 2, and try again. Remember to try to express the claim as clearly " +
+					"and precisely as you can, keeping key words the same");
+			} else {
+				answer.response.addParagraph("No, that's still not quite right. The correct answer " +
+					"is: \"it is the function of a just man to harm those who are wicked and are his " +
+					"enemies\". Look again at paragraph 2 to check.");
+			}
+		</rules>
+	</question>
+</questions>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           targetNamespace="http://openmentor.org.uk/opencomment.xsd"
+           elementFormDefault="qualified" 
+           xmlns:om="http://openmentor.org.uk/opencomment.xsd">
+
+    <xs:annotation>
+    	<xs:documentation>
+    		This is the XML Schema definition for the Open Comment file
+    		that is used by the feedback engine. This can be used to
+    		validate and generate files, but it should also be
+    		maintained as the definitive reference for the Open Comment
+    		file format.
+    	</xs:documentation>
+    </xs:annotation>
+    
+    <xs:element name="questions" type="om:questionsType"></xs:element>
+    
+    <xs:complexType name="questionsType">
+    	<xs:choice minOccurs="1" maxOccurs="unbounded">
+    		<xs:element name="question" type="om:questionType"></xs:element>
+    	</xs:choice>
+    </xs:complexType>
+    
+    <xs:complexType name="questionType">
+    	<xs:sequence>
+    		<xs:element name="text" type="xs:string"
+    			minOccurs="1" maxOccurs="1">
+    		</xs:element>
+    		<xs:element name="segment" type="xs:string"
+    			minOccurs="1" maxOccurs="1">
+    		</xs:element>
+    		<xs:element name="concepts" type="om:conceptsType"
+    			minOccurs="1" maxOccurs="1">
+    		</xs:element>
+        	<xs:element name="rules" type="om:rulesType"
+        		minOccurs="1" maxOccurs="unbounded">
+        	</xs:element>
+        </xs:sequence>
+
+        <xs:attribute name="id" type="xs:ID"></xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="conceptsType" mixed="true">
+    	<xs:choice minOccurs="0" maxOccurs="unbounded">
+    		<xs:element name="concept" type="om:conceptType"></xs:element>
+    	</xs:choice>
+    </xs:complexType>
+
+   	<xs:complexType name="conceptType" mixed="true">
+   		<xs:sequence>
+ 			<xs:any minOccurs="0" maxOccurs="unbounded" processContents="skip" />
+   		</xs:sequence>
+   		<xs:attribute name="name" type="xs:string"></xs:attribute>
+       	<xs:attribute name="class" type="xs:string"></xs:attribute>
+   	</xs:complexType>
+    
+    <xs:complexType name="rulesType" mixed="true">
+    	<xs:simpleContent>
+    		<xs:extension base="xs:string">
+    			<xs:attribute name="lang" type="xs:string"></xs:attribute>
+    		</xs:extension>
+    	</xs:simpleContent>
+    </xs:complexType>
+</xs:schema>

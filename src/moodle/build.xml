@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<project default="build">
+	<target name="init">
+	    <tstamp/>
+		<property file="local.properties"/>
+		<property file="build.properties"/>
+		<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+		  <classpath>
+		    <pathelement location="${basedir}/src/lib/ant-contrib-0.6.jar"/>
+		  </classpath>
+		</taskdef>
+	</target>
+	<target name="get.version" depends="init">
+		<exec executable="/usr/local/bin/svn"
+		      outputproperty="svn.output"
+			  dir="${basedir}">
+			<arg line="info"/>
+		</exec>
+		<propertyregex property="svn.version"
+		               input="${svn.output}"
+		               regexp="Revision\:\s+(\d+)"
+		               select="\1"
+		               casesensitive="false" />
+	</target>
+	<target name="build" depends="init,get.version" 
+		    description="Build and install">
+		<echo message="Current Subversion revision: ${svn.version}"/>
+		<echo message="Copying files to Moodle"/>
+		<copy todir="${moodle.base}" verbose="true">
+			<fileset dir="${src.moodle}">
+				<include name="lang/**/*"/>
+				<include name="question/**/*"/>
+			</fileset>
+		</copy>
+	</target>
+</project>

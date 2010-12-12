@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:tns="http://www.opencomment.org.uk/opencomment/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="opencomment"
+	targetNamespace="http://www.opencomment.org.uk/opencomment/">
+	
+    <wsdl:message name="getFeedbackRequest">
+		<wsdl:part name="questionId" type="xsd:string"></wsdl:part>
+		<wsdl:part name="descriptorUrl" type="xsd:string"></wsdl:part>
+		<wsdl:part name="submission" type="xsd:string"></wsdl:part>
+		<wsdl:part name="attempt" type="xsd:int"></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getFeedbackResponse">
+		<wsdl:part name="result" type="xsd:string"></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="initializeEngineRequest">
+		<wsdl:part name="value" type="xsd:string"></wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="initializeEngineResponse">
+		<wsdl:part name="result" type="xsd:string"></wsdl:part>
+	</wsdl:message>
+	<wsdl:portType name="OpenComment">
+		<wsdl:operation name="getFeedback">
+			<wsdl:input message="tns:getFeedbackRequest"></wsdl:input>
+			<wsdl:output message="tns:getFeedbackResponse"></wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="initializeEngine">
+			<wsdl:input message="tns:initializeEngineRequest"></wsdl:input>
+			<wsdl:output message="tns:initializeEngineResponse"></wsdl:output>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="OpenCommentSOAP" type="tns:OpenComment">
+		<soap:binding style="rpc"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="getFeedback">
+			<soap:operation soapAction="http://www.opencomment.org.uk/opencomment/getFeedback" />
+			<wsdl:input><soap:body use="literal" /></wsdl:input>
+			<wsdl:output><soap:body use="literal" /></wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="initializeEngine">
+			<soap:operation soapAction="http://www.opencomment.org.uk/opencomment/initializeEngine" />
+			<wsdl:input><soap:body use="literal" /></wsdl:input>
+			<wsdl:output><soap:body use="literal" /></wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="OpenComment">
+		<wsdl:port binding="tns:OpenCommentSOAP" name="OpenCommentSOAP">
+			<soap:address location="http://localhost:8080/axis/services/OpenCommentSOAP" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

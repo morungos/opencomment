@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<questions xmlns="http://openmentor.org.uk/opencomment.xsd">
+	<question id="default">
+		<text>
+Study table 2.4.  What does table 2.4 suggest about agriculture 
+in contrast to industry in Germany before World War I?
+(Ref: AA312 Unit 2 (The Combatants in 1914: Soldiers and their States) p.59)
+		</text>
+		<segment>
+			/(?:\.|\?)/
+		</segment>
+		
+		<concepts>
+			<concept name="gnp" class="uk.org.opencomment.classifiers.RegexClassifier">
+				/gross\s+national\s+product/
+			</concept>
+			<concept name="industry" class="uk.org.opencomment.classifiers.RegexClassifier">
+				/industr/
+			</concept>
+			
+			<concept name="agriculture" class="uk.org.opencomment.svm.SVMClassifier">
+				<vocabulary>agriculture,industry,farming</vocabulary>
+				<include>agriculture</include>
+				<include>farming</include>
+				<exclude>industry</exclude>
+			</concept>
+			
+			<concept name="employment" class="uk.org.opencomment.svm.SVMClassifier">
+				<vocabulary>employed,job,worker,labour,force,gross,national,product</vocabulary>
+				<include>more industrialised labour force</include>
+				<include>industry employed fewer people </include>
+				<exclude>Gross National Product </exclude>
+			</concept>
+			
+			<concept name="shift" class="uk.org.opencomment.svm.SVMClassifier">
+				<vocabulary>drift,shift,change,from,rising,numbers,gross,national,GNP,employed</vocabulary>
+				<include>drift away from agriculture</include>
+				<include>contribution of agriculture to the economy is shrinking</include>
+				<include>change from mainly an agriculture based nation to an industrial one</include>
+				<include>shift to a more industrialised labour force</include>
+				<include>shift in employment from agriculture to industry</include>
+				<exclude>Gross National Product </exclude>
+				<exclude>numbers employed in agriculture were still rising</exclude>
+				<exclude>Agriculture’s contribution to Germany’s Gross National Product was declining</exclude>
+			</concept>
+		</concepts>
+		
+		<rules lang="text/javascript">
+			if (answer.concepts.size() == 0) {
+			  answer.response.text = "&lt;p>Maybe you are a bit confused by the question. " + 
+			  	 "It may be helpful to remember you are not being asked about the " +
+			  	 "causes directly, but why the causes have been so extensively " + 
+			  	 "studied&lt;/p>";
+			  answer.exit();
+			}
+			
+			if (! (answer.findConcept("shift") &amp;&amp; answer.findConcept("industry"))) { 
+				answer.suggestions.pushNew("You may need to be more explicit about Germany "+
+					"becoming an industrial state.");
+			}
+			
+			if (answer.findConcept("shift") &amp;&amp; answer.findConcept("industry")) { 
+				answer.suggestions.pushNew("This does comment on the qualitative change i.e. "+
+					"Germany became an industrial country. However, it is important to link "+
+					"this the labour force figures");
+			}
+			
+			if (! answer.findConcept("employment")) {
+				answer.suggestions.pushNew("You way want to say more about the labour force figures.");
+			}
+			
+			if (answer.findConcept("shift") &amp;&amp; ! answer.findConcept("gnp")) {
+				answer.comments.pushNew("You may want to be clear that the distribution of "+
+					"employment is less than that of GNP. This is because though the change "+
+					"in wealth generation within the economy was substantial, the changes in "+
+					"the composition of the labour force were less so. This was because industry "+
+					"was substantially less labour intensive than agriculture.");
+			}
+			
+			answer.comments.pushNew("The key point is that the shift in GNP from agriculture to "+
+					"industry was much more marked than the changes in the share of the labour "+
+					"force as indicated by the employment statistics");
+		</rules>
+		<rules lang="text/javascript">
+			if (answer.comments.length &gt; 2) {
+				answer.response.addParagraph("This response shows some strong points");
+			} else {
+				answer.response.addParagraph("Well done on this submission");
+			}
+			answer.response.addList(answer.suggestions.concat(answer.comments));
+		</rules>
+	</question>
+</questions>

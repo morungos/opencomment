@@ -1,0 +1,209 @@
+<project name="OpenComment">
+	<property name="local.properties" location="./local.properties"/>
+	<property file="${local.properties}"/>
+	<property name="build.properties" location="./build.properties"/>
+	<property file="${build.properties}"/>
+    		  
+    <path id="axis.classpath">
+		<fileset dir="${axis.libs}">
+    		<include name="**/*.jar" />
+  		</fileset>
+	</path>
+	
+    <taskdef resource="axis-tasks.properties"
+    		 classpathref="axis.classpath" />
+    		 
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+		<classpath>
+			<pathelement location="${basedir}/src/lib/ant-contrib-0.6.jar"/>
+		</classpath>
+	</taskdef>
+    		 
+    <target name="create.service.java" description="Create the service Java files">
+    	<delete dir="${wsdl.output.dir}/src"/>
+    	<mkdir dir="${wsdl.output.dir}/src"/>
+    	<echo message="Generating Java output files"/>
+    	<axis-wsdl2java
+  			output="${wsdl.output.dir}/src"
+  			testcase="true"
+  			verbose="true"
+  			serverside="true"
+  			url="${wsdl.input}">
+  			<mapping
+      			namespace="http://www.opencomment.org.uk/opencomment/"
+      			package="${wsdl.package}" />
+  		</axis-wsdl2java>
+  		<echo message="Deleting stub implementation file"/>
+  		<delete file="${wsdl.output.dir}/src/${java.package.dir}/service/OpenCommentSOAPImpl.java"/>
+    </target>
+    
+    <target name="compile.engine.java" description="Compile engine Java classes">
+    	<delete dir="${java.engine.output.dir}"/>
+    	<mkdir dir="${java.engine.output.dir}"/>
+    	<javac 
+    		debug="on"
+    		destdir="${java.engine.output.dir}"
+    		source="1.5">
+    		<classpath>
+    			<pathelement location="${src.libs}/js.jar"/>
+    			<pathelement location="${src.libs}/log4j-1.2.14.jar"/>
+    			<pathelement location="${src.libs}/commons-logging-1.1.jar"/>
+    		</classpath>
+    		<src path="${src.engine}"/>
+    	</javac>
+    </target>
+    
+    <target name="compile.gui.java" description="Compile GUI Java classes">
+    	<delete dir="${java.gui.output.dir}"/>
+    	<mkdir dir="${java.gui.output.dir}"/>
+    	<javac 
+    		debug="on"
+    		destdir="${java.gui.output.dir}"
+    		source="1.5">
+    		<classpath>
+    			<pathelement location="${java.engine.output.dir}"/>
+     			<pathelement location="${src.libs}/log4j-1.2.14.jar"/>
+       			<pathelement location="${src.libs}/commons-logging-1.1.jar"/>
+     		</classpath>
+    		<src path="${src.gui}"/>
+    	</javac>
+    </target>
+    
+    <!-- Creates the engine as a JAR file -->
+    <target name="create.engine.jar" description="Make engine JAR file">
+    	<delete file="${java.engine.target}"/>
+    	<jar destfile="${java.engine.target}">
+    		<fileset dir="${java.engine.output.dir}"/>
+    		<fileset dir="${src.conf}"/>
+    		<fileset dir="${src.xsd}"/>
+    		<zipgroupfileset dir="${src.libs}" includes="${js.file}"/>
+    		<zipgroupfileset dir="${src.libs}" includes="${logging.file}"/>
+    		<zipgroupfileset dir="${src.libs}" includes="${log4j.file}"/>
+    	</jar>
+    	<echo message="Created engine JAR file"/>
+    </target>
+    
+    <!-- The GUI includes the engine and a frame -->
+    <target name="create.gui.jar" depends="create.engine.jar"
+            description="Make GUI JAR file">
+    	<delete file="${java.gui.target}"/>
+    	<jar destfile="${java.gui.target}">
+    		<fileset dir="${java.gui.output.dir}"/>
+    		<zipfileset src="${java.engine.target}"/>
+    		<manifest>
+      			<attribute name="Main-Class" value="${package.base}.gui.DemoFrame"/>
+    		</manifest>
+    	</jar>
+    	<signjar
+    		keystore="src/sign/myKeystore"
+    		alias="myself"
+    		storepass="knockan"
+    		jar="${java.gui.target}"/>
+    	<echo message="Created GUI application: ${java.gui.target}"/>
+    </target>
+    
+    <target name="compile.service.java" description="Compile service Java classes">
+    	<delete dir="${java.service.output.dir}"/>
+    	<mkdir dir="${java.service.output.dir}"/>
+    	<delete dir="${wsdl.output.dir}/classes"/>
+    	<mkdir dir="${wsdl.output.dir}/classes"/>
+    	<javac 
+    		debug="on"
+    		destdir="${java.service.output.dir}"
+    		source="1.5">
+    		<classpath>
+    			<pathelement location="${axis.libs}/axis.jar"/>
+    			<pathelement location="${axis.libs}/jaxrpc.jar"/>
+    			<pathelement location="${src.libs}/junit.jar"/>
+    			<pathelement location="${java.engine.target}"/>
+    		</classpath>
+    		<src path="${wsdl.output.dir}/src"/>
+    		<src path="${src.service}"/>
+    	</javac>
+    </target>
+    
+    <target name="create.service.jar" description="Make web service jar file">
+    	<delete file="${wsdl.jar.dir}/${wsdl.jar.file}"/>
+    	<jar destfile="${wsdl.jar.dir}/${wsdl.jar.file}">
+    	     <fileset dir="${java.service.output.dir}"/>
+    	     <zipfileset src="${java.engine.target}"/>
+    	</jar>
+    </target>
+    
+    <target name="get.version">
+		<exec executable="/usr/local/bin/svn"
+		      outputproperty="svn.output"
+			  dir="${basedir}">
+			<arg line="info -r HEAD"/>
+		</exec>
+		<propertyregex property="svn.version"
+		               input="${svn.output}"
+		               regexp="Revision\:\s+(\d+)"
+		               select="\1"
+		               casesensitive="false" />
+	</target>
+    
+    
+    <target name="moodle.deploy" depends="get.version"
+            description="Deploys the Moodle question type">
+    	<echo message="Current Subversion revision: ${svn.version}"/>
+		<echo message="Copying files to Moodle"/>
+		<copy todir="${moodle.base}" verbose="true">
+			<fileset dir="${src.moodle}">
+				<include name="lang/**/*"/>
+				<include name="question/**/*"/>
+			</fileset>
+		</copy>
+		<copy todir="${moodle.base}/question/type/opencomment" verbose="true">
+			<fileset dir="${src.wsdl.dir}"/>
+		</copy>
+    </target>
+    
+    <target name="axis.deploy" description="Deploys server package to Axis server">
+    	<copy todir="${axis.libs}">
+    		<fileset dir="${wsdl.jar.dir}">
+    			<include name="${wsdl.jar.file}"/>
+    		</fileset>
+    	</copy>
+    	<axis-admin
+			port="${axis.port}"
+			hostname="${axis.host}"
+			servletpath="${axis.admin.service}" 
+			xmlfile="${wsdl.output.dir}/src/${java.package.dir}/service/deploy.wsdd"
+			username="${axis.username}"
+			password="${axis.password}"
+			debug="true" />
+    </target>
+	
+	<target name="jnlp.deploy" description="Deploys the Java Web Start files">
+		<ftp server="${jnlp.remote.host}"
+			userid="${jnlp.remote.username}"
+			password="${jnlp.remote.password}"
+			remotedir="${jnlp.remote.root}opencomment"
+			verbose="yes"
+			action="mkdir" />
+		<ftp server="${jnlp.remote.host}"
+			userid="${jnlp.remote.username}"
+			password="${jnlp.remote.password}"
+			remotedir="${jnlp.remote.root}opencomment"
+			verbose="yes"
+			action="put">
+			<fileset file="${java.gui.target}"/>
+			<fileset dir="${src.jnlp}"/>
+			<fileset dir="${src.xsd}"/>
+		</ftp>
+	</target>
+    
+    <target name="build" description="Build and deploy the web service"
+    		depends="compile.engine.java,
+    		         create.engine.jar,
+    		         compile.gui.java,
+    		         create.gui.jar,
+    		         create.service.java,
+    		         compile.service.java,
+    		         create.service.jar,
+    		         axis.deploy,
+    		         moodle.deploy,
+    				 jnlp.deploy">
+    </target>
+</project>

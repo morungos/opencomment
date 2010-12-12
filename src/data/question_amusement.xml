@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<questions xmlns="http://openmentor.org.uk/opencomment.xsd">
+
+<!-- 
+Compare with the "OpenComment question on amusement.doc" file - in this
+case I have tried to implement the question as closely as possible to 
+the form of the original, which uses the JavaScript object model a 
+bit differently. 
+-->
+
+	<question id="default">
+		<text>
+Study the following passage.  What does Aristotle take to be 
+the place of amusement in the best life?
+
+Happiness … is not found in amusement; for it would be absurd 
+if the end were amusement, and our lifelong efforts and sufferings 
+aimed at amusing ourselves. For… serious work and toiled aimed 
+only at amusement appears stupid and excessively childish. Rather, 
+it seems correct to amuse ourselves so that we can do something 
+erious…for amusement would seem to be relaxation, and it is 
+because we cannot toil continuously that we require relaxation. 
+Relaxation, then, is not the end, since we pursue it to prepare 
+for activity. (Nicomachean Ethics 1176b, translated by T. Irwin;
+Indianapolis: Hackett 1985)
+		</text>
+		<segment>
+			/(?:\.|\?)/
+		</segment>
+		
+		<concepts>
+			<concept name="aim" class="uk.org.opencomment.svm.SVMClassifier">
+				<vocabulary>amusement,life,objective,aim,leisure,happiness,goal,serious,Aristotle,work,best,people</vocabulary>
+    			<include>Amusement is not the end or objective of life</include>
+    			<include>Leisure is not life's main goal</include>
+    			<include>We are not here just to enjoy ourselves</include>
+    			<include>Life is not only about being happy</include>
+    			<include>people should not treat it as their ultimate aim</include>
+    			<exclude>Something about serious work</exclude>
+    			<exclude>Argument by Aristotle about being childish</exclude>
+    			<exclude>Best life and amusement</exclude>
+    			<exclude>Ethics is all about whether life's objectives are right</exclude>
+  			</concept>
+  			
+  			<concept name="leisure" class="uk.org.opencomment.svm.SVMClassifier">
+				<vocabulary>amusement,rest,relax,work,serious,life,objective,aim,people,Aristotle</vocabulary>
+				<include>We need amusement for rest and relaxation</include>
+				<include>Leisure helps us rest so we can work better</include>
+				<include>Rest is is about preparing for toil and serious work</include>
+				<include>Effective work depends on being able to relax</include>
+				<exclude>We are not here just to enjoy ourselves</exclude>
+				<exclude>Argument by Aristotle about being childish</exclude>
+				<exclude>Best life and amusement</exclude>
+				<exclude>Ethics is all about whether life's objectives are right</exclude>
+			</concept>
+		</concepts>
+		
+		<rules lang="text/javascript">
+			if (answer.findConcept("aim")) {
+				if (answer.findConcept("leisure")) {
+					answer.response.addParagraph("Yes, that's right, well done");
+				} else {
+					answer.response.addParagraph("Good, that's right. But does Aristotle think " +
+						"that amusement has any role to play in the best life?");
+				}
+			} else {
+				if (answer.findConcept("leisure")) {
+					answer.response.addParagraph("Good, that's right. But can you say a little more? " +
+						"If we need amusement in order to relax, what does that imply about the " +
+						"objective or purpose of our lives?");
+				} else {
+					answer.response.addParagraph("Have another try. Before typing in your answer, " +
+						"read the passage carefully again. Does Aristotle think that amusement is " +
+						"the end or objective of human life? Does he think that amusement plays any " +
+						"useful role in our lives at all? ");
+				}
+			}
+		</rules>
+	</question>
+</questions>

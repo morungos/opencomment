@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<questions xmlns="http://openmentor.org.uk/opencomment.xsd">
+<!-- 
+Another philosophy question. Again, we are using the attempt system as well as the
+rest of the slightly polished environment. 
+
+Model answer: When men are harmed they become more unjust.
+-->
+	<question id="default">
+		<text>
+In paragraphs 3 to 9, Socrates argues for his first premise, by
+comparing people with horses and dogs. What is his first premise?
+		</text>
+		<segment>
+			/(?:\.|\?)/
+		</segment>
+		
+		<concepts>
+			<concept name="become" class="uk.org.opencomment.classifiers.RegexClassifier">
+				/become/
+			</concept>
+			
+			<concept name="harm" class="uk.org.opencomment.classifiers.RegexClassifier">
+				/harm/
+			</concept>
+
+			<concept name="just" class="uk.org.opencomment.classifiers.RegexClassifier">
+				/just/
+			</concept>
+			
+			<concept name="conclusion" class="uk.org.opencomment.svm.SVMClassifier">
+				<vocabulary>men,women,people,harm,just,unjust,conclusion,premise,Socrates</vocabulary>
+				<include>When men are harmed they become more unjust</include>
+				<include>People who are harmed come to be less just</include>
+				<include>Men and women who are injured become less just</include>
+				<include>We become less just when we are harmed by others</include>
+				<exclude>Socrates conclusion is about justice</exclude>
+				<exclude>This premise is about harm and justice</exclude>
+				<exclude>People are not the same as horses or dogs</exclude>
+			</concept>
+		</concepts>
+		
+		<rules lang="text/javascript">
+			var matched = 0;
+			
+			if (answer.findConcept("become")) {
+				matched = matched + 1;
+			}
+			if (answer.findConcept("harm")) {
+				matched = matched + 1;
+			}
+			if (answer.findConcept("just")) {
+				matched = matched + 1;
+			}
+			
+			if (answer.findConcept("conclusion") &amp;&amp; (matched == 3)) {
+				answer.response.addParagraph("Yes, that's right. Let's call this Premise 1");
+			} else if (answer.findConcept("conclusion")) {
+				answer.response.addParagraph("Yes, that's right. Let's put is like this: when men are " +
+					"harmed they become worse as men. Let's call this Premise 1.");
+			} else if (answer.attempt == 1) {
+				answer.response.addParagraph("That's not quite right. Have and careful look at paragraph " +
+					"9, and try again. Remember to try to express the premise as clearly and precisely as " +
+					"you can, keeping key words the same");
+			} else {
+				answer.response.addParagraph("No, that’s still not quite right. The correct answer is " +
+					"\"when men are harmed they become worse as men\". (Let's call this Premise 1.) Look " +
+					"again at paragraph 9 to check");
+			}
+		</rules>
+	</question>
+</questions>

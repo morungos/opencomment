@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Last update: 22nd November 2007 -->
+<jnlp codebase="http://www.wired4learning.com/files/opencomment/">
+  <information>
+    <title>Open Comment</title>
+    <vendor>The Open University, Wired4Learning, and the Robert Gordon University</vendor>
+    <description>Helps you test out Open Comment questions</description>
+    <description kind="tooltip">Open Comment GUI</description>
+    <homepage href="doc/index.html"/>
+    <icon href="icon.gif"/>
+    <offline-allowed/>
+    <shortcut online="false"> 
+      <desktop/> 
+      <menu submenu="Wired4Learning Apps"/> 
+    </shortcut> 
+  </information>
+  <security> 
+    <all-permissions/> 
+  </security>
+  <resources>
+    <j2se version="1.5+"/>
+    <jar href="OpenCommentApp.jar"/>
+    <property name="debug.opencomment" value="true"/>
+  </resources>
+  <application-desc main-class="uk.org.opencomment.gui.DemoFrame"/>
+</jnlp>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<questions xmlns="http://openmentor.org.uk/opencomment.xsd">
+<!-- 
+This is in some ways similar to the previous question, but allows a bit more flexibility by
+using the SVM classifier. This is appropriate - the pattern classifier is great when 
+expecting relatively precise phrasing: SVM is far more open. 
+
+The target answer is: The conclusion that he reaches is that it is not the nature of 
+the just man to harm anyone. Notice that Socrates’ conclusion contradicts Polemarchus’ claim. 
+-->
+	<question id="default">
+		<text>
+In this passage, Socrates examines a claim that Polemarchus 
+makes about the just man. 
+
+What conclusion does Socrates reach?
+		</text>
+		<segment>
+			/(?:\.|\?)/
+		</segment>
+		
+		<concepts>
+		
+			<concept name="nature" class="uk.org.opencomment.classifiers.RegexClassifier">
+				/nature/
+			</concept>
+			
+			<concept name="just_man" class="uk.org.opencomment.classifiers.RegexClassifier">
+				/(good|just)\s+(man|people)/
+			</concept>
+			
+			<concept name="others" class="uk.org.opencomment.classifiers.RegexClassifier">
+				/(anyone|other)/
+			</concept>
+			
+			<concept name="conclusion" class="uk.org.opencomment.svm.SVMClassifier">
+				<vocabulary>nature,just,men,women,people,injure,harm,others</vocabulary>
+    			<include>It is not the nature of the just man to harm anyone</include>
+    			<include>People who are just should not injure others</include>
+    			<include>Good men and women ought not to harm other people</include>
+    			<include>Other people would not be harmed by people who are truly just</include>
+    			<exclude>Men and women that have just nature</exclude>
+    			<exclude>People are not always good</exclude>
+    			<exclude>Other people hve a right not to be harmed</exclude>
+    			<exclude>It is not right that people harm others</exclude>
+  			</concept>
+		</concepts>
+		
+		<rules lang="text/javascript">
+			var matched = 0;
+			
+			if (answer.findConcept("nature")) {
+				matched = matched + 1;
+			}
+			if (answer.findConcept("wicked")) {
+				matched = matched + 1;
+			}
+			if (answer.findConcept("others")) {
+				matched = matched + 1;
+			}
+			
+			if (answer.findConcept("conclusion") &amp;&amp; (matched == 3)) {
+				answer.response.addParagraph("Yes, that's right. Notice that Socrates'" +
+					"conclusion contradicts Polemarchus' claim.");
+			} else if (answer.findConcept("conclusion") &amp;&amp; (matched >= 1)) {
+				answer.response.addParagraph("Yes, that’s right. Let’s put is like this: \"it " +
+					"is not the nature of the just man to harm anyone\". Notice that Socrates' " +
+					"conclusion contradicts Polemarchus' claim.");
+			} else if ((! answer.findConcept("conclusion")) &amp;&amp; (answer.attempt == 1)) {
+				answer.response.addParagraph("That's not quite right. Have and careful look at " +
+					"paragraph 2, and try again. Remember to try to express the claim as clearly " +
+					"and precisely as you can, keeping key words the same.");
+			} else {
+				answer.response.addParagraph("No, that's still not quite right. The correct answer " +
+					"is: \"it is not the nature of the just man to harm anyone\". Look again at " +
+					"paragraph 2 to check. Notice that Socrates' conclusion contradicts " +
+					"Polemarchus' claim.");
+			}
+		</rules>
+	</question>
+</questions>

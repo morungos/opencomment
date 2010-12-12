@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<questions xmlns="http://openmentor.org.uk/opencomment.xsd">
+	<question id="default">
+		<text>
+How does Socrates argue that courage is not endurance? 
+
+You will find plenty of material relevant to answering this question in Book 2, 
+Chapter 8. The question asks you both to explain and to evaluate Laches' 
+definition of courage as endurance. You should try to divide your time equally 
+between these two tasks. It would be a good idea to focus on those two tasks: 
+for example, there is no need to spend time explaining what leads up to the 
+argument, or what happens later on in the dialogue. 
+		</text>
+		<segment>
+			/(?:\.|\?)/
+		</segment>
+		
+		<concepts>
+			<concept name="cause" class="uk.org.opencomment.classifiers.RegexClassifier">
+				/(causes?|blame)/
+			</concept>
+			
+			<concept name="opinion" class="uk.org.opencomment.svm.SVMClassifier">
+				<vocabulary>think,sure,agree,argument,Socrates,endurance,Laches</vocabulary>
+    			<include>I do not think it is sound</include>
+    			<include>everyone would agree</include>
+    			<include>I am not sure about this</include>
+    			<exclude>I should say how the argument works</exclude>
+    			<exclude>endurance is not admirable</exclude>
+    			<exclude>Socrates Laches </exclude>
+  			</concept>
+  			
+  			<concept name="url" class="uk.org.opencomment.classifiers.RegexClassifier">
+  				/(?:https?\:|course.*book)/
+  			</concept>
+			
+			<concept name="argument" class="uk.org.opencomment.svm.SVMClassifier">
+				<vocabulary>deductive,argument,premise,conclusion,Laches,Socrates,courage,endurance</vocabulary>
+				<include>I should say how the argument works</include>
+				<include>It is a deductive argument </include>
+				<include>It has two premises </include>
+				<include>the conclusion is </include>
+				<exclude>Socrates Laches </exclude>
+				<exclude>endurance is not admirable  </exclude>
+				<exclude>courage and endurance cannot be the same thing</exclude>
+			</concept>
+			
+			<concept name="background" class="uk.org.opencomment.svm.SVMClassifier">
+				<vocabulary>Socrates,Athens,fifth,executed,Laches,courage,military,endurance,sound</vocabulary>
+				<include>Socrates lived in Athens in the fifth century </include>
+				<include>He was executed by the Athenian democracy</include>
+				<include>Laches was a general in the Athenian army</include>
+				<include>Courage was military virtue needed by hoplites</include>
+				<exclude>It is a deductive argument</exclude>
+				<exclude>I do not think it is sound </exclude>
+				<exclude>courage and endurance cannot be the same thing</exclude>
+			</concept>
+		</concepts>
+		
+		<rules lang="text/javascript">
+			if (answer.concepts.size() == 0) {
+			  answer.response.text = "&lt;p>Maybe you are a bit confused by the question. " + 
+			  	 "It may be helpful to remember you are not being asked about the " +
+			  	 "argument directly, but about the structure of the argument and how " +
+			  	 "it has been used.&lt;/p>";
+			  answer.exit();
+			}
+			
+			if (answer.findConcept("url")) {
+				answer.comments.pushNew("It is good to see that you have referenced your sources.");
+			} else {
+				answer.comments.pushNew("It is a good idea to reference any sources you have used - " + 
+					"check the assignment booklet for advice.");
+			}
+			
+			if (! answer.findConcept("argument")) {
+				answer.suggestions.pushNew("You may want to focus more precisely on the question " +
+					"that has been asked. In general, it's often a good idea to follow the structure " +
+					"of the question when you construct your answer. ");
+				answer.suggestions.pushNew("In this case, the best way to start would be by addressing " +
+					"the question: how does Socrates argues against Laches' definition");
+			} else {
+				if (answer.positionConcept("argument") != 0) {
+					answer.suggestions.pushNew("Getting onto the question s straight away would help " +
+						"you to give enough attention to all parts of the question.");
+				} else {
+					answer.comments.pushNew("Focusing on the question right from the beginning will give " +
+						"you more space to develop your ideas. ");
+				}
+			}
+			
+			if (answer.findConcept("background")) {
+				answer.suggestions.pushNew("This background material about Socrates' life is not " +
+					"needed to answer the question. The best approach is to focus directly on the " +
+					"question that has been asked, right from the beginning of your answer. ");
+			}
+		</rules>
+		<rules lang="text/javascript">
+			if (answer.comments.length &gt; 2) {
+				answer.response.addParagraph("This response shows some strong points");
+			} else {
+				answer.response.addParagraph("Well done on this submission");
+			}
+			answer.response.addList(answer.suggestions.concat(answer.comments));
+		</rules>
+	</question>
+</questions>

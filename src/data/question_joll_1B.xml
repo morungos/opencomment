@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<questions xmlns="http://openmentor.org.uk/opencomment.xsd">
+	<question id="default">
+		<text>
+Read the first paragraph in which Joll analyses why the 
+outbreak of the First World War has been studied in such 
+detail. Why do you think it was considerably important 
+to establish the exact causes of the war?
+(Ref: AA312 Book 1 (Europe in 1914) p.160)
+		</text>
+		<segment>
+			/(?:\.|\?)/
+		</segment>
+		
+		<concepts>
+			<concept name="second" class="uk.org.opencomment.classifiers.RegexClassifier">
+				/(?:second\s+(world)?\s+war|war\s+(2|ii))/
+			</concept>
+			<concept name="cause" class="uk.org.opencomment.classifiers.RegexClassifier">
+				/(causes?|blame)/
+			</concept>
+			
+			<concept name="politicians" class="uk.org.opencomment.svm.SVMClassifier">
+				<vocabulary>politicians,politics,propaganda,economy,population,cause,victims,lessons,enemy,suffering</vocabulary>
+				<include>economic and political predictions</include>
+				<include>politicians make sense of any political changes</include>
+				<include>politicians could tell and convince the population</include>
+				<exclude>crushed their enemy and lessons were not learnt</exclude>
+				<exclude>There was a lot of hardship after the First World War </exclude>
+				<exclude>aggression could be used as the reason for such suffering </exclude>
+			</concept>
+			
+			<concept name="aggression" class="uk.org.opencomment.svm.SVMClassifier">
+				<vocabulary>German,Austria,Hungary,Turkey,nationalism,power,status,culture,memory,remembrance</vocabulary>
+				<include>German aggression could be used as the reason for such suffering</include>
+				<include>the rise of nationalism</include>
+				<exclude>culture memory remembrance</exclude>
+			</concept>
+			
+			<concept name="military_tactics" class="uk.org.opencomment.svm.SVMClassifier">
+				<vocabulary>military,tactics,strategies,defence,planning,war,cause,remembrance,poppies</vocabulary>
+				<include>Causes also can be weighed with military tactics </include>
+				<include>military strategies</include>
+				<include>defence planning </include>
+				<exclude>First World War </exclude>
+				<exclude>cause </exclude>
+				<exclude>annual ceremonies of remembrance</exclude>
+				<exclude>the wearing of poppies</exclude>
+			</concept>
+			
+			<concept name="history" class="uk.org.opencomment.svm.SVMClassifier">
+				<vocabulary>lessons,history,mistakes,repeated,causes,military,politics</vocabulary>
+				<include>lessons were not learnt</include>
+				<include>mistakes would not be repeated</include>
+				<include>Establishing the causes vindicated the huge loss of life</include>
+				<exclude>Causes also can be weighed with military tactics</exclude>
+				<exclude>politicians make sense of any political changes</exclude>
+			</concept>
+		</concepts>
+		
+		<rules lang="text/javascript">
+			if (answer.concepts.size() == 0) {
+			  answer.response.text = "&lt;p>Maybe you are a bit confused by the question. " + 
+			  	 "It may be helpful to remember you are not being asked about the " +
+			  	 "causes directly, but why the causes have been so extensively " + 
+			  	 "studied&lt;/p>";
+			  answer.exit();
+			}
+		
+			if (answer.findConcept("second") &amp;&amp; answer.findConcept("cause")) {
+			  answer.suggestions.pushNew("It is a subject of heated historical debate whether the "+
+			  	 "outcome of the First World War led directly to the Second World War. This debate "+
+			  	 "is a key subject of this course, and it is worth lookin at the relevant units to "+
+			  	 "make your own mind up.");
+			}
+			
+			if (answer.findConcept("politicians") &amp;&amp; ! answer.findConcept("cause")) {
+				answer.comments.pushNew("Maybe you are too focussed on the politicians, and this could "+
+					"suggest an instrumentalization of History.");
+			}
+			
+			if (answer.findConcept("politicians")) {
+				answer.comments.pushNew("Historians argue that everyone is better for being able to "+
+					"make sense of the direction of political change – this is, in itself, a good "+
+					"reason for studying History.");
+			}
+			
+			if (answer.findConcept("military_tactics")) {
+				answer.comments.pushNew("You need to be clear about how military tactics at Ypres "+
+					"or on the Somme were affected by the events in Sarajevo, Moscow, Paris, Berlin, "+
+					"and Vienna, which led to the outbreak of war in 1914");
+			}
+			
+			if (answer.findConcept("history")) {
+				answer.comments.pushNew("The question of why we do History is an interesting one, One "+
+					"of the reasons often given is that knowing the past allows one to avoid the mistakes "+
+					"of past actors.  This is a good reason for seeking to know the past, though there are "+
+					"difficulties about drawing the correct lessons from interpretation of historical evidence.");
+			}
+		</rules>
+		<rules lang="text/javascript">
+			if (answer.comments.length &gt; 2) {
+				answer.response.addParagraph("This response shows some strong points");
+			} else {
+				answer.response.addParagraph("Well done on this submission");
+			}
+			answer.response.addList(answer.suggestions.concat(answer.comments));
+		</rules>
+	</question>
+</questions>
