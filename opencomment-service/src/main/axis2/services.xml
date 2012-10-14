@@ -1,0 +1,28 @@
+<service name="name of the service" scope="name of the scope"
+	class="full qualifide name the service lifecycle class"
+	targetNamespace="target namespase for the service">
+	<Description> The description of the service  </Description>
+
+	<transports>
+		<transport>HTTP</transport>
+	</transports>
+
+	<schema schemaNamespace="schema namespace" />
+
+	<messageReceivers>
+		<messageReceiver 
+		    mep="http://www.w3.org/2004/08/wsdl/in-out"
+			class="org.apache.axis2.rpc.receivers.RPCMessageReceiver" />
+	</messageReceivers>
+
+	<parameter 
+		name="ServiceClass" 
+		locked="xsd:false">org.apache.axis2.sample.echo.EchoImpl</parameter>
+
+	<operation name="echoString" mep="operation MEP">
+		<actionMapping>Mapping to action</actionMapping>
+		<module ref=" a module name " />
+		<messageReceiver
+			class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver" />
+	</operation>
+</service>

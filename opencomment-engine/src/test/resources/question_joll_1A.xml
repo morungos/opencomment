@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<questions xmlns="http://openmentor.org.uk/opencomment.xsd">
+	<question id="default">
+		<text>
+Read the first paragraph in which Joll analyses why the 
+outbreak of the First World War has been studied in such 
+detail. What reasons does he give? 
+(Ref: AA312 Book 1 (Europe in 1914) p.160)
+		</text>
+		<segment>
+			/(?:\.|\?)/
+		</segment>
+		
+		<concepts>
+			<concept name="war" class="uk.org.opencomment.classifiers.RegexClassifier">
+				/world\s+war/
+			</concept>
+			<concept name="cause" class="uk.org.opencomment.classifiers.RegexClassifier">
+				/(causes?|blame)/
+			</concept>
+			<concept name="turning_point" class="uk.org.opencomment.classifiers.RegexClassifier">
+				/turning\s+point/
+			</concept>
+			<concept name="end_era" class="uk.org.opencomment.svm.SVMClassifier">
+				<vocabulary>end,era,new,beginning,start,point,turning,culture,memory</vocabulary>
+				<include>The end of an era</include>
+				<include>New beginning</include>
+				<include>Turning point</include>
+				<exclude>culture memory remembrance</exclude>
+			</concept>
+			<concept name="culture" class="uk.org.opencomment.svm.SVMClassifier">
+				<vocabulary>culture,memory,remembrance,poppies,remembrance,poetry</vocabulary>
+				<include>annual ceremonies of remembrance</include>
+				<include>the wearing of poppies</include>
+				<include>the poppy and Remembrance Day</include>
+				<include>poetry</include>
+				<exclude>German</exclude>
+			</concept>
+			<concept name="politics" class="uk.org.opencomment.svm.SVMClassifier">
+				<vocabulary>German,Austria,Hungary,Turkey,nationalism,power,status,culture,memory,remembrance</vocabulary>
+				<include>Germany, Austria, Hungary and Turkey were trying to maintain their power base and status </include>
+				<include>the rise of nationalism</include>
+				<exclude>culture memory remembrance</exclude>
+			</concept>
+		</concepts>
+		
+		<rules lang="text/javascript">
+			if (answer.concepts.size() == 0) {
+			  answer.response.text = "&lt;p>Maybe you are a bit confused by the question. " + 
+			  	 "It may be helpful to remember you are not being asked about the " +
+			  	 "causes directly, but why the causes have been so extensively " + 
+			  	 "studied&lt;/p>";
+			  answer.exit();
+			}
+		
+			if (answer.findConcept("end_era")) {
+			  answer.comments.pushNew("This is absolutely right - what Joll is " + 
+			  	 "saying in technical terms, is that 1914 marked a turning " + 
+			  	 "point.");
+			}
+			
+			if (answer.findConcept("turning_point")) {
+			  answer.comments.pushNew("You have done well here to use the term "+ 
+			  	 "\'turning point\', which is a technically accurate term within the " +
+			  	 "discourse of the discipline.");
+			} else {
+			  answer.suggestions.pushNew("You may want to think about using the term "+ 
+			  	 "\'turning point\', which is a technically accurate term within the " +
+			  	 "discourse of the discipline.");
+			}
+			
+			if (answer.findConcept("cause")) {
+			  answer.suggestions.pushNew("This question does not ask about the causes " + 
+			  	 "directly, but why the causes have been so extensively studied. The " + 
+			  	 "issue of blame ought to form part of an answer to this question.");
+			}
+			
+			if (answer.findConcept("culture")) {
+			  answer.comments.pushNew("With the passage of time the First World " +
+			  	 "War is not part of the direct memory of the population any " +
+			  	 "longer, though it plays an important role in popular culture.");
+			}
+			
+			if (answer.findConcept("politics")) {
+			  answer.suggestions.pushNew("You also seem to consider the issue of " + 
+			  	 "responsibility for the outbreak of the war. This demonstrates some " +
+			  	 "understanding of the positions of the great powers in Central and " + 
+			  	 "South-Eastern Europe. Whether any of these factors has been the major " + 
+			  	 "cause of the war has been the subject of fierce historical debate that " + 
+			  	 "is ongoing, and is the subject of one unit of this course.");
+			}
+		</rules>
+		<rules lang="text/javascript">
+			if (answer.comments.length &gt; 2) {
+				answer.response.addParagraph("This response shows some strong points");
+			} else {
+				answer.response.addParagraph("Well done on this submission");
+			}
+			answer.response.addList(answer.suggestions.concat(answer.comments));
+		</rules>
+	</question>
+</questions>

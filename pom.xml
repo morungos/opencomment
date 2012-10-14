@@ -1,0 +1,125 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>uk.org.opencomment</groupId>
+	<artifactId>opencomment</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>OpenComment</name>
+	<url>http://www.opencomment.org.uk</url>
+	<description>An open source tool providing feedback to students on written texts</description>
+	<inceptionYear>2006</inceptionYear>
+	<organization>
+		<name>The OpenComment Team</name>
+		<url>http://www.opencomment.org.uk</url>
+	</organization>
+	<issueManagement>
+		<url>https://github.com/morungos/opencomment/issues</url>
+		<system>GitHub</system>
+	</issueManagement>
+	<scm>
+		<url>https://github.com/morungos/opencomment</url>
+	</scm>
+
+	<properties>
+		<engine.version>0.0.1-SNAPSHOT</engine.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>manual</distribution>
+			<comments>A business-friendly OSS license</comments>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>Denise Whitelock</name>
+			<id>denise</id>
+			<email>Denise.Whitelock@open.ac.uk</email>
+			<organization>Institute of Educational Technology, The Open University</organization>
+			<timezone>0</timezone>
+		</developer>
+		<developer>
+			<name>Stuart Watt</name>
+			<id>stuart</id>
+			<email>stuart@morungos.com</email>
+			<organization>Ontario Institute for Cancer Research</organization>
+			<timezone>-5</timezone>
+		</developer>
+	</developers>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.6</source>
+						<target>1.6</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>3.1</version>
+					<configuration>
+						<reportPlugins>
+							<plugin>
+								<groupId>org.apache.maven.plugins</groupId>
+								<artifactId>maven-javadoc-plugin</artifactId>
+								<version>2.8.1</version>
+							</plugin>
+							<plugin>
+								<groupId>org.apache.maven.plugins</groupId>
+								<artifactId>maven-jxr-plugin</artifactId>
+								<version>2.1</version>
+							</plugin>
+							<plugin>
+								<groupId>org.apache.maven.plugins</groupId>
+								<artifactId>maven-project-info-reports-plugin</artifactId>
+								<version>2.4</version>
+							</plugin>
+							<plugin>
+								<groupId>org.apache.maven.plugins</groupId>
+								<artifactId>maven-surefire-report-plugin</artifactId>
+								<version>2.12.3</version>
+							</plugin>
+							<plugin>
+								<groupId>org.apache.maven.plugins</groupId>
+								<artifactId>maven-checkstyle-plugin</artifactId>
+								<version>2.9.1</version>
+								<configuration>
+									<enableRulesSummary>false</enableRulesSummary>
+									<includeTestSourceDirectory>true</includeTestSourceDirectory>
+								</configuration>
+							</plugin>
+						</reportPlugins>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<modules>
+		<module>opencomment-engine</module>
+		<module>opencomment-gui</module>
+		<module>opencomment-service</module>
+	</modules>
+
+</project>

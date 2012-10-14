@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<questions xmlns="http://openmentor.org.uk/opencomment.xsd">
+	<question id="A207.maps">
+		<segment>
+			/(?:\.|\?)/
+		</segment>
+		
+		<concepts>
+			<concept name="corsica" class="uk.org.opencomment.classifiers.RegexClassifier">
+				/corsica/
+			</concept>
+			<concept name="reading" class="uk.org.opencomment.classifiers.RegexClassifier">
+				/revolution/
+			</concept>
+			<concept name="size" class="uk.org.opencomment.classifiers.RegexClassifier">
+				/(coach|ride)/
+			</concept>
+			<concept name="svmtest" class="uk.org.opencomment.svm.SVMClassifier">
+				<vocabulary>philosophy,definitely,dining,Corsica,France</vocabulary>
+				<include>This is definitely about philosophers</include>
+				<include>Socrates did philosophy</include>
+				<include>Philosophers think a lot</include>
+				<include>Don't even ask about the dining philosophers</include>
+				<exclude>Corsica is definitely an island</exclude>
+				<exclude>Corsica is part of France</exclude>
+				<exclude>France makes much of the world's wine</exclude>
+				<exclude>France specialises in dining</exclude>
+			</concept>
+		</concepts>
+		
+		<rules lang="text/javascript">
+			if (answer.concepts.size() == 0) {
+			  answer.response.text = "Sorry, you don't seem to have tried very hard!";
+			  answer.exit();
+			}
+		
+			if (answer.concepts.find("corsica")) {
+			  answer.suggestions.add("The difference in the maps relating to Corsica may " +
+			     "be as much a problem with the maps chosen as anything else.");
+			}
+		</rules>
+		<rules lang="text/javascript">
+			if (! answer.concepts.find("context")) {
+			  answer.suggestions.add("You should try to make more use of contextual information, " +
+	             "by filling in and explaining the changes with information " +
+            	 "obtained studying other elements of the course.");
+            }
+		</rules>
+		<rules lang="text/javascript">
+			var overview = "";
+			if (answer.suggestions.count &gt; 2) {
+				overview = "This response shows some strong points";
+			} else {
+				overview = "Well done on this submission";
+			}
+			answer.response.text = overview;
+		</rules>
+	</question>
+</questions>
